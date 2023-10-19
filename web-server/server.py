@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+import sys,os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -36,10 +37,29 @@ class RequestHandler(BaseHTTPRequestHandler):
     #     self.send_header("Content-Length",str(len(self.Page)))
     #     self.end_headers()
     #     self.wfile.write(self.Page.encode('utf-8'))
+    #
+    # def do_GET(self):
+    #     page = self.create_page()
+    #     self.send_content(page)
 
     def do_GET(self):
-        page = self.create_page()
-        self.send_content(page)
+        try:
+            # 文件完整路径
+            full_path = os.getcwd() + self.path
+
+            #如果该路径不存在...
+            if not os.path.exists(full_path):
+                raise ServerException("'{0}' not found".format(self.path))
+                #抛出异常：文件未找到
+
+
+
+
+
+
+        #
+
+
 
     def create_page(self):
         values = {
@@ -58,6 +78,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(page)))
         self.end_headers()
         self.wfile.write(page.encode('utf-8'))
+
+    class ServerException(Exception):
+        '''服务器内部错误'''
+        pass
 
 
 if __name__ == '__main__':
